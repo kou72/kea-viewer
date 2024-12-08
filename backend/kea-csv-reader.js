@@ -1,19 +1,28 @@
-import express from 'express';
-import { parse } from 'csv-parse';
-import { createReadStream } from 'fs';
+import express from "express";
+import { parse } from "csv-parse";
+import { createReadStream, readFileSync } from "fs";
+import { join } from "path";
+
+// 設定ファイルの読み込み
+const config = JSON.parse(readFileSync(join("..", "kea-viewer.conf"), "utf8"));
 
 const app = express();
 
+// CORSの設定（シンプルに全てのオリジンを許可）
 app.use((req, res, next) => {
-  const origin = req.get('origin');
-  if (origin && origin.match(/:3000$/)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
-// CSVファイルを読み取る関数
+// バックエンドの設定のみを返す
+app.get("/api/config", (req, res) => {
+  res.json({
+    refreshInterval: config.refreshInterval,
+    csvPath: config.csvPath,
+  });
+});
+
 const readLeaseFile = (filepath, res) => {
   const parser = parse({ columns: true }, (err, records) => {
     if (err) {
@@ -25,11 +34,10 @@ const readLeaseFile = (filepath, res) => {
   createReadStream(filepath).pipe(parser);
 };
 
-// DHCPv4リース情報
-app.get('/api/leases/v4', (req, res) => {
-  readLeaseFile('/var/lib/kea/kea-leases4.csv', res);
+app.get("/api/leases/v4", (req, res) => {
+  readLeaseFile(config.csvPath, res);
 });
 
-app.listen(3001, '0.0.0.0', () => {
-  console.log('Kea Viewer Server running at http://0.0.0.0:3001');
+app.listen(config.backendPort, "0.0.0.0", () => {
+  console.log(`Kea Viewer Server running at http://0.0.0.0:${config.backendPort}`);
 });
