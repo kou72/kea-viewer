@@ -7,7 +7,7 @@ const config = JSON.parse(readFileSync(join("..", "kea-viewer.conf"), "utf8"));
 
 const nextConfig: NextConfig = {
   env: {
-    NEXT_PUBLIC_BACKEND_PORT: String(config.backendPort), // 数値を文字列に変換
+    NEXT_PUBLIC_BACKEND_PORT: String(config.backendPort),
   },
 };
 
