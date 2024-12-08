@@ -6,10 +6,10 @@ import { useCsvData } from "@/app/hooks/useCsvData";
 export default function Home() {
   const { csvData, error } = useCsvData();
 
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error) return <div className="text-zinc-500">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-zinc-800">
       <CsvTable data={csvData} />
     </div>
   );
