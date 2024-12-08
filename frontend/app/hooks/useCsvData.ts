@@ -12,7 +12,7 @@ export const useCsvData = () => {
 
   const fetchCsvData = async () => {
     try {
-      const response = await fetch("http://192.168.11.161:3001/api/leases/v4");
+      const response = await fetch("/api/leases");
       const data = await response.json();
       setCsvData(data);
     } catch (err) {
