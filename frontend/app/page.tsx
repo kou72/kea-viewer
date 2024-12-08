@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { CsvTable } from "@/app/components/CsvTable";
 import { useCsvData } from "@/app/hooks/useCsvData";
 

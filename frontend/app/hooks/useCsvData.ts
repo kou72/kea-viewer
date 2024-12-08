@@ -16,7 +16,7 @@ export const useCsvData = () => {
       const data = await response.json();
       setCsvData(data);
     } catch (err) {
-      setError("Failed to fetch data");
+      setError(String(err));
     }
   };
 
