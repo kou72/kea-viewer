@@ -18,10 +18,10 @@ export const CsvTable = ({ data }: CsvTableProps) => {
 
   return (
     <div className="p-4">
-      <div className="overflow-hidden rounded-lg shadow-lg bg-teal-950">
+      <div className="overflow-hidden rounded-lg shadow-lg">
         <table className="min-w-full table-auto">
           <thead>
-            <tr className="bg-teal-900">
+            <tr className="bg-teal-900/50">
               <th className="p-4 text-left text-gray-100 font-bold">Address</th>
               <th className="p-4 text-left text-gray-100 font-bold">Hardware Address</th>
               <th className="p-4 text-left text-gray-100 font-bold">Hostname</th>
