@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 
-const REFRESH_INTERVAL = 5000; // 5 seconds
+interface Config {
+  refreshInterval: number;
+  csvPath: string;
+}
 
 interface CsvData {
   address: string;
@@ -11,35 +14,59 @@ interface CsvData {
 export const useCsvData = (autoRefresh: boolean = false) => {
   const [csvData, setCsvData] = useState<CsvData[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [config, setConfig] = useState<Config | null>(null);
+
+  const backendPort = process.env.NEXT_PUBLIC_BACKEND_PORT || "3001";
+
+  const fetchConfig = async () => {
+    try {
+      const host = window.location.hostname;
+      const response = await fetch(`http://${host}:${backendPort}/api/config`);
+      const configData = await response.json();
+      setConfig(configData);
+    } catch (err) {
+      setError(String(err));
+    }
+  };
 
   const fetchCsvData = useCallback(async () => {
     try {
-      const response = await fetch("/api/leases");
+      const host = window.location.hostname;
+      const response = await fetch(`http://${host}:${backendPort}/api/leases/v4`);
       const data = await response.json();
       setCsvData(data);
       setError(null);
     } catch (err) {
       setError(String(err));
     }
-  }, []);
+  }, [backendPort]);
 
-  const refresh = () => {
-    fetchCsvData();
-  };
+  const refresh = useCallback(async () => {
+    await fetchCsvData();
+  }, [fetchCsvData]);
+
+  useEffect(() => {
+    fetchConfig();
+  }, []);
 
   useEffect(() => {
     fetchCsvData();
   }, [fetchCsvData]);
 
   useEffect(() => {
-    if (!autoRefresh) return;
+    if (!autoRefresh || !config) return;
 
     const interval = setInterval(() => {
       fetchCsvData();
-    }, REFRESH_INTERVAL);
+    }, config.refreshInterval * 1000);
 
     return () => clearInterval(interval);
-  }, [autoRefresh, fetchCsvData]);
+  }, [autoRefresh, config, fetchCsvData]);
 
-  return { csvData, error, refresh };
+  return {
+    csvData,
+    error,
+    refresh,
+    config,
+  };
 };
