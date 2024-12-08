@@ -1,16 +1,27 @@
 "use client";
 
+import { useState } from "react";
 import { CsvTable } from "@/app/components/CsvTable";
+import { Header } from "@/app/components/Header";
 import { useCsvData } from "@/app/hooks/useCsvData";
 
 export default function Home() {
-  const { csvData, error } = useCsvData();
-
-  if (error) return <div className="text-zinc-500">{error}</div>;
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const { csvData, error, refresh } = useCsvData(autoRefresh);
 
   return (
     <div className="min-h-screen bg-zinc-800">
-      <CsvTable data={csvData} />
+      <div className="p-8 min-h-screen bg-teal-950/30">
+        <div className="max-w-7xl mx-auto">
+          <Header
+            onRefresh={refresh}
+            autoRefresh={autoRefresh}
+            onAutoRefreshToggle={setAutoRefresh}
+          />
+          {error ? <div className="text-red-400 mb-4">{error}</div> : <></>}
+          <CsvTable data={csvData} />
+        </div>
+      </div>
     </div>
   );
 }
