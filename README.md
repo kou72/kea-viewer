@@ -2,6 +2,8 @@
 
 KEA DHCP サーバーのリース情報を表示する Web アプリケーション
 
+![image](https://github.com/user-attachments/assets/112e5742-9722-451e-9231-23c8c0e7dfe4)
+
 ## 機能
 
 - DHCP リース情報のリアルタイム表示
