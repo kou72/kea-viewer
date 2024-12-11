@@ -1,2 +1,5 @@
 # kea-viewer.conf には環境設定が含まれるので UP しない
 kea-viewer.conf
+
+# log
+log/
