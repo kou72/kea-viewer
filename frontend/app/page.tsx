@@ -18,9 +18,9 @@ export default function Home() {
           <Header
             csvPath={csvPath}
             refreshInterval={refreshInterval}
-            onRefresh={refresh}
+            refresh={refresh}
             autoRefresh={autoRefresh}
-            onAutoRefreshToggle={setAutoRefresh}
+            setAutoRefresh={setAutoRefresh}
           />
           {error && <div className="text-red-400 mb-4">{error}</div>}
           <CsvTable data={csvData} />
