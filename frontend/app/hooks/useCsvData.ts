@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useConfig } from "@/app/hooks/useConfig";
 
 interface CsvData {
   address: string;
@@ -7,15 +8,11 @@ interface CsvData {
 }
 
 export const useCsvData = (autoRefresh: boolean = false) => {
+  const { refreshInterval, backendIp, backendPort } = useConfig();
   const [csvData, setCsvData] = useState<CsvData[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const envRefreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL;
-  const refreshInterval = envRefreshInterval !== undefined ? Number(envRefreshInterval) : 1;
-  const backendPort = process.env.NEXT_PUBLIC_BACKEND_PORT || "3001";
-  const backendIp = process.env.NEXT_PUBLIC_BACKEND_IP || "127.0.0.1";
-  const csvPath = process.env.NEXT_PUBLIC_CSV_PATH || "Loading...";
-
+  // CSVデータ取得
   const fetchCsvData = useCallback(async () => {
     try {
       const response = await fetch(`http://${backendIp}:${backendPort}/api/leases/v4`);
@@ -27,6 +24,7 @@ export const useCsvData = (autoRefresh: boolean = false) => {
     }
   }, [backendIp, backendPort]);
 
+  // データを再取得
   const refresh = async () => {
     await fetchCsvData();
   };
@@ -47,7 +45,5 @@ export const useCsvData = (autoRefresh: boolean = false) => {
     csvData,
     error,
     refresh,
-    refreshInterval,
-    csvPath,
   };
 };
