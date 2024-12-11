@@ -1,3 +1,4 @@
+// configファイルから環境変数を取得
 export const useConfig = () => {
   const csvPath = process.env.NEXT_PUBLIC_CSV_PATH || "Loading...";
   const envRefreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL;
