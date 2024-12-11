@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_REFRESH_INTERVAL: String(config.refreshInterval),
     NEXT_PUBLIC_BACKEND_PORT: String(config.backendPort),
     NEXT_PUBLIC_FRONTEND_PORT: String(config.frontendPort),
-    NEXT_PUBLIC_BACKEND_IP_ADDRESS: config.backendIpAddress,
+    NEXT_PUBLIC_BACKEND_IP: config.backendIp,
   },
 };
 

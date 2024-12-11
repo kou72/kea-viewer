@@ -13,19 +13,19 @@ export const useCsvData = (autoRefresh: boolean = false) => {
   const envRefreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL;
   const refreshInterval = envRefreshInterval !== undefined ? Number(envRefreshInterval) : 1;
   const backendPort = process.env.NEXT_PUBLIC_BACKEND_PORT || "3001";
-  const backendIpAddress = process.env.NEXT_PUBLIC_BACKEND_IP_ADDRESS || "127.0.0.1";
+  const backendIp = process.env.NEXT_PUBLIC_BACKEND_IP || "127.0.0.1";
   const csvPath = process.env.NEXT_PUBLIC_CSV_PATH || "Loading...";
 
   const fetchCsvData = useCallback(async () => {
     try {
-      const response = await fetch(`http://${backendIpAddress}:${backendPort}/api/leases/v4`);
+      const response = await fetch(`http://${backendIp}:${backendPort}/api/leases/v4`);
       const data = await response.json();
       setCsvData(data);
       setError(null);
     } catch (err) {
       setError(String(err));
     }
-  }, [backendIpAddress, backendPort]);
+  }, [backendIp, backendPort]);
 
   const refresh = async () => {
     await fetchCsvData();

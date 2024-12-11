@@ -5,6 +5,9 @@ import { join } from "path";
 
 // 設定ファイルの読み込み
 const config = JSON.parse(readFileSync(join("..", "kea-viewer.conf"), "utf8"));
+const csvPath = config.csvPath;
+const backendPort = config.backendPort;
+const backendIp = config.backendIp;
 
 const app = express();
 
@@ -13,14 +16,6 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
-});
-
-// バックエンドの設定のみを返す
-app.get("/api/config", (req, res) => {
-  res.json({
-    refreshInterval: config.refreshInterval,
-    csvPath: config.csvPath,
-  });
 });
 
 const readLeaseFile = (filepath, res) => {
@@ -35,9 +30,9 @@ const readLeaseFile = (filepath, res) => {
 };
 
 app.get("/api/leases/v4", (req, res) => {
-  readLeaseFile(config.csvPath, res);
+  readLeaseFile(csvPath, res);
 });
 
-app.listen(config.backendPort, "0.0.0.0", () => {
-  console.log(`Kea Viewer Server running at http://0.0.0.0:${config.backendPort}`);
+app.listen(backendPort, backendIp, () => {
+  console.log(`Kea Viewer Server running at http://${backendIp}:${backendPort}`);
 });
