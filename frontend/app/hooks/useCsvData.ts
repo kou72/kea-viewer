@@ -1,10 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 
-interface Config {
-  refreshInterval: number;
-  csvPath: string;
-}
-
 interface CsvData {
   address: string;
   hwaddr: string;
@@ -14,59 +9,45 @@ interface CsvData {
 export const useCsvData = (autoRefresh: boolean = false) => {
   const [csvData, setCsvData] = useState<CsvData[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [config, setConfig] = useState<Config | null>(null);
 
+  const envRefreshInterval = process.env.NEXT_PUBLIC_REFRESH_INTERVAL;
+  const refreshInterval = envRefreshInterval !== undefined ? Number(envRefreshInterval) : 1;
   const backendPort = process.env.NEXT_PUBLIC_BACKEND_PORT || "3001";
-
-  const fetchConfig = async () => {
-    try {
-      const host = window.location.hostname;
-      const response = await fetch(`http://${host}:${backendPort}/api/config`);
-      const configData = await response.json();
-      setConfig(configData);
-    } catch (err) {
-      setError(String(err));
-    }
-  };
+  const backendIpAddress = process.env.NEXT_PUBLIC_BACKEND_IP_ADDRESS || "127.0.0.1";
+  const csvPath = process.env.NEXT_PUBLIC_CSV_PATH || "Loading...";
 
   const fetchCsvData = useCallback(async () => {
     try {
-      const host = window.location.hostname;
-      const response = await fetch(`http://${host}:${backendPort}/api/leases/v4`);
+      const response = await fetch(`http://${backendIpAddress}:${backendPort}/api/leases/v4`);
       const data = await response.json();
       setCsvData(data);
       setError(null);
     } catch (err) {
       setError(String(err));
     }
-  }, [backendPort]);
+  }, [backendIpAddress, backendPort]);
 
-  const refresh = useCallback(async () => {
+  const refresh = async () => {
     await fetchCsvData();
-  }, [fetchCsvData]);
+  };
 
-  useEffect(() => {
-    fetchConfig();
-  }, []);
-
+  // 初回のデータ取得
   useEffect(() => {
     fetchCsvData();
   }, [fetchCsvData]);
 
+  // autoRefresh が true の場合、指定された間隔でデータを取得
   useEffect(() => {
-    if (!autoRefresh || !config) return;
-
-    const interval = setInterval(() => {
-      fetchCsvData();
-    }, config.refreshInterval * 1000);
-
+    if (!autoRefresh) return;
+    const interval = setInterval(fetchCsvData, refreshInterval * 1000);
     return () => clearInterval(interval);
-  }, [autoRefresh, config, fetchCsvData]);
+  }, [autoRefresh, fetchCsvData, refreshInterval]);
 
   return {
     csvData,
     error,
     refresh,
-    config,
+    refreshInterval,
+    csvPath,
   };
 };

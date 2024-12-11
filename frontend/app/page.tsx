@@ -7,7 +7,7 @@ import { useCsvData } from "@/app/hooks/useCsvData";
 
 export default function Home() {
   const [autoRefresh, setAutoRefresh] = useState(false);
-  const { csvData, error, refresh, config } = useCsvData(autoRefresh);
+  const { csvData, error, refresh, refreshInterval, csvPath } = useCsvData(autoRefresh);
 
   return (
     <div className="min-h-screen bg-zinc-800">
@@ -17,7 +17,8 @@ export default function Home() {
             onRefresh={refresh}
             autoRefresh={autoRefresh}
             onAutoRefreshToggle={setAutoRefresh}
-            config={config}
+            refreshInterval={refreshInterval}
+            csvPath={csvPath}
           />
           {error && <div className="text-red-400 mb-4">{error}</div>}
           <CsvTable data={csvData} />
