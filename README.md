@@ -23,13 +23,19 @@ KEA DHCP サーバーのリース情報を表示する Web アプリケーショ
 ```
 kea-viewer/
 ├── backend/           # バックエンドサーバー
-├── frontend/          # フロントエンドアプリケーション
+├── frontend/         # フロントエンドアプリケーション
 ├── logs/             # ログファイル
 ├── ecosystem.config.js # PM2設定ファイル
-└── kea-viewer.conf   # アプリケーション設定ファイル
+├── _kea-viewer.conf  # 設定ファイルのテンプレート
+└── kea-viewer.conf   # アプリケーション設定ファイル（ローカルで作成）
 ```
 
 ## 設定
+
+### 設定ファイルの準備
+
+\_kea-viewer.conf を kea-viewer.conf にリネーム
+環境に合わせて設定を変更
 
 ### kea-viewer.conf
 
@@ -38,7 +44,8 @@ kea-viewer/
   "csvPath": "/var/lib/kea/kea-leases4.csv", // KEAリースファイルのパス
   "refreshInterval": 1, // 更新間隔（秒）
   "backendPort": 3001, // バックエンドポート
-  "frontendPort": 3000 // フロントエンドポート
+  "frontendPort": 3000, // フロントエンドポート
+  "backendIpAddress": "127.0.0.1" // バックエンドのIPアドレス
 }
 ```
 
